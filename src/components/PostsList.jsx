@@ -1,79 +1,36 @@
+import React, { useState } from "react";
 import styled from "styled-components";
 import { formatDistance } from "date-fns";
-import { useState } from "react";
 
 import { Post } from "./Post";
 import { Comment } from "./Comment";
-import data from "../data.json";
 
-export const StyledItem = styled.li`
+export const StyledContainer = styled.div`
+	flex-direction: column-reverse;
 	display: flex;
-	padding: 6px 20px;
+	padding: 6px 15px;
 	background-color: var(--colors-neutral-white);
 	margin-bottom: 20px;
 	border-radius: 7px;
-	width: 250px;
+	overflow: hidden;
 
-	@media (min-width: 700px) {
-		width: 400px;
-	}
-	@media (min-width: 1200px) {
-		width: 100%;
+	@media (min-width: 549px) {
+		flex-direction: row;
+		padding: 8px 20px;
 	}
 `;
 
-// const StyledReplyWrapper = styled(StyledItem)`
-// 	margin-left: auto;
-// 	position: relative;
+const StyledReplyContainer = styled(StyledContainer)`
+	margin-left: auto;
+	width: 90%;
+`;
 
-// 	&:before {
-// 		content: "";
-// 		position: absolute;
-// 		display: inline-block;
-// 		left: -40px;
-// 		width: 2px;
-// 		height: 100%;
-// 		border-left: 3px solid hsl(223deg 3.98% 66.9%);
-// 	}
-
-// 	@media (min-width: 1200px) {
-// 		width: 760px;
-// 	}
-// `;
-
-export const PostsList = () => {
-	const [reply, setReply] = useState(false);
+export const PostsList = ({ allPosts }) => {
 	const [text, setText] = useState("");
-
-	const allPosts = data.comments.reduce((acc, post) => {
-		acc.push(post);
-		acc.push(...post?.replies);
-		return acc;
-	}, []);
-
+	const [reply, setReply] = useState(null);
 	const [posts, setPosts] = useState(allPosts);
-	const currentUser = data.currentUser;
 
-	const ensertComment = (id) => {
-		const postIndex = posts.findIndex((post) => post.id === id);
-		const comment = {
-			id: 10,
-			content: "I couldn't agree more with ",
-			replyingTo: "ramsesmiron",
-			user: {
-				image: {
-					png: "/avatars/image-juliusomo.png",
-					webp: "/avatars/image-juliusomo.webp"
-				},
-				username: "juliusomo"
-			}
-		};
-		const post = posts.splice(postIndex, 0, comment);
-
-		setPosts([...posts, posts.splice(postIndex, 0, comment)]);
-	};
-
-	const addPost = () => {
+	const addPost = (replyingTo = "", postId) => {
 		let formatedDate = formatDistance(new Date(), new Date());
 
 		const newPost = {
@@ -81,54 +38,73 @@ export const PostsList = () => {
 			content: text,
 			createdAt: formatedDate,
 			score: 0,
-			// "replyingTo": "maxblagun",
+			replyingTo,
 			user: {
 				image: {
-					webp: currentUser.image.webp
-				}
-			},
-			username: "juliusomo",
-			currentUser: true
+					webp: "../images/avatars/image-juliusomo.webp"
+				},
+				username: "juliusomo",
+				currentUser: true
+			}
 		};
+
+		if (replyingTo && postId) {
+			const postIndex = posts.findIndex((post) => post.id === postId);
+			posts.splice(postIndex + 1, 0, newPost);
+
+			setReply(null);
+			setText("");
+			return setPosts([...posts]);
+		}
 
 		setPosts([...posts, newPost]);
 		setText("");
 	};
 
+	const replyComment = (id) => {
+		setReply(id);
+	};
+
 	return (
 		<>
-			<ul>
-				{posts.map((post) => (
-					<StyledItem key={post.id}>
-						<Post
-							post={post}
-							posts={posts}
-							setPosts={setPosts}
-							text={text}
-							setText={setText}
-							reply={reply}
-							setReply={setReply}
-							ensertComment={ensertComment}
-						/>
-					</StyledItem>
-				))}
-			</ul>
+			{posts.map((post) => {
+				const item = (
+					<Post
+						post={post}
+						posts={posts}
+						setPosts={setPosts}
+						replyComment={replyComment}
+					/>
+				);
+				return (
+					<React.Fragment key={post.id}>
+						{!post.replyingTo ? (
+							<StyledContainer>{item}</StyledContainer>
+						) : (
+							<StyledReplyContainer>{item}</StyledReplyContainer>
+						)}
 
-			<Comment
-				posts={posts}
-				addPost={addPost}
-				text={text}
-				setText={setText}
-				currentUser={currentUser}
-			/>
+						{post.id === reply ? (
+							<Comment
+								addPost={addPost}
+								text={text}
+								setText={setText}
+								replyTo={post.user.username}
+								setReply={setReply}
+								postId={post.id}
+							/>
+						) : null}
+					</React.Fragment>
+				);
+			})}
+
+			{!reply && (
+				<Comment
+					text={text}
+					setText={setText}
+					addPost={addPost}
+				/>
+			)}
 		</>
 	);
 };
-
-// {reply && (
-//     <Comment
-//         text={text}
-//         setText={setText}
-//         currentUser={currentUser}
-//     />
-// )}

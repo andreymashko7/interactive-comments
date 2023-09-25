@@ -1,20 +1,22 @@
 import styled from "styled-components";
-import image from "../images/avatars/image-amyrobson.webp";
 
 export const StyledWrapper = styled.div`
-	display: flex;
-	padding: 10px 30px;
-	justify-content: space-between;
+	display: grid;
+	grid-template-columns: 1fr;
+	padding: 10px 20px;
+	justify-content: space-around;
 	background-color: var(--colors-neutral-white);
 	margin-bottom: 30px;
 	border-radius: 7px;
-	width: 250px;
+	width: 100%;
+	gap: 10px;
 
-	@media (min-width: 700px) {
-		width: 400px;
+	@media (min-width: 549px) {
+		display: flex;
 	}
-	@media (min-width: 1200px) {
-		width: 100%;
+
+	@media (min-width: 989px) {
+		column-gap: 20px;
 	}
 `;
 
@@ -24,12 +26,11 @@ const StyledImg = styled.img.attrs(({ src }) => ({
 }))`
 	width: 40px;
 	height: 40px;
-	// margin-right: 10px;
 `;
 
 export const StyledTextErea = styled.textarea`
 	display: block;
-	min-width: 600px;
+	width: 100%;
 	resize: none;
 	padding: 6px 15px;
 	font-size: var(--fs-md);
@@ -45,45 +46,74 @@ export const StyledTextErea = styled.textarea`
 `;
 
 export const StyledButton = styled.button`
-	padding: 10px;
+	padding: 7px;
 	height: fit-content;
 	border-radius: 5px;
 	font-weight: var(--fw-normal);
-	font-size: var(--fs-ld);
+	font-size: var(--fs-md);
 	text-transform: upperCase;
-	background-color: var(--colors-primary-Moderate);
+	background: ${({ $primary }) =>
+		$primary ? "var(--colors-primary-Moderate)" : "rgb(247 81 87)"};
 	color: var(--colors-neutral-white);
 	cursor: pointer;
 
 	&:hover {
-		background-color: hsl(238deg 69.98% 61.79%);
+		background-color: ${({ $primary }) =>
+			$primary ? "hsl(238deg 69.98% 61.79%)" : "red"};
 	}
 	&:disabled {
 		background-color: #cccccc;
 		cursor: not-allowed;
 	}
+
+	@media (min-width: 549px) {
+		font-size: var(--fs-ld);
+	}
+`;
+
+const StyledBtnContainer = styled.div`
+	display: grid;
+	row-gap: 10px;
 `;
 
 export const Comment = (props) => {
-	const { addPost, text, setText, currentUser } = props;
-	console.log("🚀 ~ file: Comment.jsx:69 ~ Comment ~ currentUser:", currentUser);
+	const {
+		addPost,
+		text,
+		setText,
+		replyTo = "",
+		setReply = null,
+		postId = null
+	} = props;
+	const logo = require("../images/avatars/image-juliusomo.webp");
+
+	const cancelMessage = () => {
+		setText("");
+		setReply(null);
+	};
 
 	return (
 		<StyledWrapper>
-			<StyledImg src={`${currentUser?.image.webp}`} />
+			<StyledImg src={logo} />
 			<StyledTextErea
 				name="comment"
-				placeholder="Add a comment ..."
-				rows="4"
+				autoFocus={replyTo ? true : false}
+				placeholder={replyTo ? `@${replyTo}` : "Add a comment ..."}
+				rows="3"
 				value={text}
 				onChange={(e) => setText(e.target.value)}
 			/>
-			<StyledButton
-				disabled={!text}
-				onClick={addPost}
-			>
-				send
-			</StyledButton>
+
+			<StyledBtnContainer>
+				<StyledButton
+					$primary
+					disabled={!text}
+					onClick={() => addPost(replyTo, postId)}
+				>
+					{replyTo ? "reply" : "send"}
+				</StyledButton>
+				{replyTo && <StyledButton onClick={cancelMessage}>cancel</StyledButton>}
+			</StyledBtnContainer>
 		</StyledWrapper>
 	);
 };

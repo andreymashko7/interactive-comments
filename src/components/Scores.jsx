@@ -4,14 +4,21 @@ import { ReactComponent as IconPlus } from "../images/icon-plus.svg";
 import { useState } from "react";
 
 const Wrapper = styled.div`
-	min-width: 35px;
-	max-height: 104px;
 	display: flex;
-	flex-direction: column;
 	align-items: center;
-	padding: 15px 0px;
 	border-radius: 8px;
 	background-color: var(--colors-bg-color);
+	justify-content: space-evenly;
+	width: 110px;
+	padding: 6px 0px;
+
+	@media (min-width: 549px) {
+		flex-direction: column;
+		width: 35px;
+		min-height: 100px;
+		display: flex;
+		padding: 0px;
+	}
 `;
 
 const StyledSvgMinus = styled(IconMinus)`
@@ -23,6 +30,7 @@ const StyledSvgMinus = styled(IconMinus)`
 		fill: var(--colors-primary-Moderate);
 	}
 `;
+
 const StyledSvgPlus = styled(IconPlus)`
 	fill: var(--colors-primary-Light-grayish);
 	transition: all 0.3s;
@@ -34,10 +42,9 @@ const StyledSvgPlus = styled(IconPlus)`
 `;
 
 const StyledSpan = styled.span`
-	padding: 18px 0px;
-	color: var(--colors-primary-Moderate);
 	font-size: var(--fs-ld);
 	font-weight: var(--fw-normal);
+	color: var(--colors-primary-Moderate);
 `;
 
 export const Scores = ({ score }) => {
@@ -50,6 +57,7 @@ export const Scores = ({ score }) => {
 	const decrementScore = () => {
 		setValue((prevState) => prevState - 1);
 	};
+
 	return (
 		<Wrapper>
 			<StyledSvgPlus onClick={incrementScore} />

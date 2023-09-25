@@ -1,12 +1,12 @@
 import styled from "styled-components";
 import { CustomButton } from "./CustomButton";
 
-const StyledWrapper = styled.div``;
 const StyledTitle = styled.h1`
 	margin-bottom: 10px;
 	font-size: 22px;
 	font-weight: var(--fw-normal);
 `;
+
 const StyledText = styled.p`
 	max-width: 300px;
 	margin-bottom: 15px;
@@ -20,7 +20,7 @@ const StyledBtnWrap = styled.div`
 
 export const ModalContent = ({ setModal, onDelete, id }) => {
 	return (
-		<StyledWrapper>
+		<>
 			<StyledTitle>Delete comment</StyledTitle>
 			<StyledText>
 				Are you sure you want to delete this comment? This will remove the comment
@@ -41,6 +41,6 @@ export const ModalContent = ({ setModal, onDelete, id }) => {
 					yes, delete
 				</CustomButton>
 			</StyledBtnWrap>
-		</StyledWrapper>
+		</>
 	);
 };

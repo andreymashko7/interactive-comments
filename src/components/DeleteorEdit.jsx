@@ -1,30 +1,40 @@
-import styled from "styled-components";
 import { useState } from "react";
+import styled from "styled-components";
 
-import { ReactComponent as IconD } from "../images/icon-delete.svg";
-import { ReactComponent as IconE } from "../images/icon-edit.svg";
-import { ModalContent } from "./ModalContent";
+import { ReactComponent as IconDelete } from "../images/icon-delete.svg";
+import { ReactComponent as IconEdit } from "../images/icon-edit.svg";
+
 import { Modal } from "./Modal";
 import { ReplyPost } from "./ReplyPost";
-
-const StyledDeleteIcon = styled(IconD)``;
-const StyledEditIcon = styled(IconE)``;
+import { ModalContent } from "./ModalContent";
 
 const StyledWrapper = styled.div`
 	display: flex;
+	align-items: flex-start;
 	color: var(--colors-primary-Moderate);
 `;
 
 export const StyledTextSpan = styled.span`
-	color: ${({ $color }) =>
-		$color ? "var(--colors-primary-Soft)" : "var(--colors-primary-Moderate)"};
 	margin-right: ${({ $right }) => ($right ? "15px" : "0px")};
 	font-weight: var(--fw-normal);
+	font-size: var(--fs-sd);
+	color: ${({ $color }) =>
+		$color ? "var(--colors-primary-Soft)" : "var(--colors-primary-Moderate)"};
+	text-decoration: underline 0.15em rgba(255, 255, 255, 0);
+	transition: text-decoration-color 1s;
 	cursor: pointer;
+
+	&:hover {
+		text-decoration-color: currentColor;
+	}
+
+	@media (min-width: 549px) {
+		font-size: var(--fs-md);
+	}
 `;
 
 export const DeleteOrEdit = (props) => {
-	const { onDelete, setEdit, ensertComment, post } = props;
+	const { onDelete, setEdit, replyComment, post } = props;
 	const {
 		id,
 		user: { currentUser }
@@ -36,7 +46,7 @@ export const DeleteOrEdit = (props) => {
 			<StyledWrapper>
 				{currentUser ? (
 					<>
-						<StyledDeleteIcon />
+						<IconDelete />
 						<StyledTextSpan
 							$color
 							$right
@@ -47,7 +57,7 @@ export const DeleteOrEdit = (props) => {
 							Delete
 						</StyledTextSpan>
 
-						<StyledEditIcon />
+						<IconEdit />
 						<StyledTextSpan
 							onClick={() => {
 								setEdit(true);
@@ -59,8 +69,7 @@ export const DeleteOrEdit = (props) => {
 				) : (
 					<ReplyPost
 						id={id}
-						// setReply={setReply}
-						ensertComment={ensertComment}
+						replyComment={replyComment}
 					/>
 				)}
 			</StyledWrapper>

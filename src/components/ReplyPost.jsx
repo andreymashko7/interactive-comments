@@ -6,18 +6,11 @@ import { ReactComponent as Icon } from "../images/icon-reply.svg";
 
 const StyledSvgReply = styled(Icon)``;
 
-export const ReplyPost = ({ setReply, ensertComment, id }) => {
+export const ReplyPost = ({ replyComment, id }) => {
 	return (
 		<>
 			<StyledSvgReply />
-			<StyledTextSpan
-				onClick={() => {
-					// setReply(true);
-					ensertComment(id);
-				}}
-			>
-				Reply
-			</StyledTextSpan>
+			<StyledTextSpan onClick={() => replyComment(id)}>Reply</StyledTextSpan>
 		</>
 	);
 };

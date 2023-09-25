@@ -13,13 +13,37 @@ const StyledContainer = styled.div`
 
 const StyledUserWrapper = styled.div`
 	display: flex;
-	width: 100%;
-	padding-left: 20px;
 	align-items: center;
 	justify-content: space-between;
+
+	@media (min-width: 549px) {
+		padding-left: 20px;
+	}
 `;
 
-export const Post = ({ ensertComment, post, posts, setPosts, reply }) => {
+const StyledMobileHidden = styled.div`
+	display: none;
+
+	@media (min-width: 549px) {
+		display: block;
+	}
+`;
+
+const StyledPcHidden = styled(StyledMobileHidden)`
+	display: block;
+
+	@media (min-width: 549px) {
+		display: none;
+	}
+`;
+
+const StyledFlexWrap = styled.div`
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+`;
+
+export const Post = ({ replyComment, post, posts, setPosts }) => {
 	const { score = 0, id, content, replyingTo = "" } = post;
 	const [edit, setEdit] = useState(false);
 	const [text, setText] = useState(content);
@@ -29,12 +53,15 @@ export const Post = ({ ensertComment, post, posts, setPosts, reply }) => {
 	};
 
 	const updatePost = (id) => {
-		const post = posts.find((post) => {
-			return post.id === id;
-		});
+		setPosts([
+			...posts.map((post) => {
+				if (post.id === id) {
+					post.content = text;
+				}
+				return post;
+			})
+		]);
 
-		const updatePost = { ...post, content: text };
-		setPosts([...posts.filter((post) => post.id !== id), updatePost]);
 		setEdit(false);
 	};
 
@@ -45,19 +72,31 @@ export const Post = ({ ensertComment, post, posts, setPosts, reply }) => {
 
 	return (
 		<>
-			<Scores score={score} />
+			<StyledFlexWrap>
+				<Scores score={score} />
+				<StyledPcHidden>
+					<DeleteOrEdit
+						post={post}
+						onDelete={deleteComment}
+						setEdit={setEdit}
+						replyComment={replyComment}
+					/>
+				</StyledPcHidden>
+			</StyledFlexWrap>
 
 			<StyledContainer>
 				<StyledUserWrapper>
 					<UserAvatar post={post} />
 
-					<DeleteOrEdit
-						post={post}
-						onDelete={deleteComment}
-						setEdit={setEdit}
-						reply={reply}
-						ensertComment={ensertComment}
-					/>
+					<StyledMobileHidden>
+						<DeleteOrEdit
+							post={post}
+							onDelete={deleteComment}
+							setEdit={setEdit}
+							replyComment={replyComment}
+							mobile
+						/>
+					</StyledMobileHidden>
 				</StyledUserWrapper>
 				{edit ? (
 					<UpdatePost

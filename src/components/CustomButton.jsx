@@ -2,15 +2,14 @@ import styled from "styled-components";
 
 const StyledButton = styled.button.attrs({})`
 	padding: 9px 16px;
-	background-color: ${({ color }) => color || "ccc"};
 	margin-right: ${({ right }) => right || "0px"};
-	color: var(--colors-neutral-white);
-	text-transform: uppercase;
-	cursor: pointer;
-
 	font-size: var(--fs-ld);
 	font-weight: var(--fw-normal);
+	text-transform: uppercase;
+	color: var(--colors-neutral-white);
+	background-color: ${({ color }) => color || "ccc"};
 	border-radius: 7px;
+	cursor: pointer;
 `;
 
 export const CustomButton = (props) => {

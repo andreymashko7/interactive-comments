@@ -1,17 +1,20 @@
 import styled from "styled-components";
 
 const StyledContent = styled.div`
-	display: block;
-	padding: 5px 10px 0px 20px;
+	padding: 20px 0px;
 	line-height: 1.2;
 	font-size: var(--fs-md);
-	letter-spacing: normal;
+	line-height: 1.33;
+
+	@media (min-width: 549px) {
+		padding: 12px 10px 5px 20px;
+	}
 `;
 
 const StyledSpan = styled.span`
-	color: var(--colors-primary-Moderate);
 	margin-right: 10px;
 	font-weight: var(--fw-bold);
+	color: var(--colors-primary-Moderate);
 `;
 
 export const TextComment = ({ text, replyTo }) => {
